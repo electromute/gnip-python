@@ -162,7 +162,7 @@ class GnipTestCase(unittest.TestCase):
         self.assertEqual(200, response.code)
         self.assertEqual(self.success, response.result)
 
-        a_filter_with_new_rule = self.gnip.find_filter(self.testpublisherscope, self.testpublisher, a_filter.name).result
+        a_filter_with_new_rule = self.gnip.get_filter(self.testpublisherscope, self.testpublisher, a_filter.name).result
         self.assertFalse(expected_rule in a_filter_with_new_rule.rules)
 
     def testDeleteRuleFromFilterOverPost(self):
@@ -189,7 +189,7 @@ class GnipTestCase(unittest.TestCase):
         response = self.gnip.add_rule_to_filter(self.testpublisherscope, self.testpublisher, a_filter.name, expected_rule)
         self.assertEqual(200, response.code)
         self.assertEqual(self.success, response.result)
-        a_filter_with_new_rule = self.gnip.find_filter(self.testpublisherscope, self.testpublisher, a_filter.name).result
+        a_filter_with_new_rule = self.gnip.get_filter(self.testpublisherscope, self.testpublisher, a_filter.name).result
         self.assertTrue(expected_rule in a_filter_with_new_rule.rules)
 
     def testAddBatchUpdateOfFilterRules(self):
@@ -199,14 +199,14 @@ class GnipTestCase(unittest.TestCase):
         response = self.gnip.add_rules_to_filter(self.testpublisherscope, self.testpublisher, a_filter.name, new_rules)
         self.assertEqual(200, response.code)
         self.assertEqual(self.success, response.result)
-        a_filter_with_new_rule = self.gnip.find_filter(self.testpublisherscope, self.testpublisher, a_filter.name).result
+        a_filter_with_new_rule = self.gnip.get_filter(self.testpublisherscope, self.testpublisher, a_filter.name).result
         for new_rule in new_rules:
             self.assertTrue(new_rule in a_filter_with_new_rule.rules)
 
     def testCreateFilter(self):
         expected_filter = filter.Filter(name=self.filterName, rules=self.rules, full_data=self.filterFullData)
         self.gnip.create_filter(self.testpublisherscope, self.testpublisher, expected_filter)
-        response = self.gnip.find_filter(self.testpublisherscope, self.testpublisher, self.filterName)
+        response = self.gnip.get_filter(self.testpublisherscope, self.testpublisher, self.filterName)
         self.assertEqual(200, response.code)
         self.assertEquals(expected_filter,response.result)
 
@@ -224,7 +224,7 @@ class GnipTestCase(unittest.TestCase):
     def testFindFilter(self):
         a_filter = filter.Filter(name=self.filterName, rules=self.rules, full_data=self.filterFullData)
         self.gnip.create_filter(self.testpublisherscope, self.testpublisher, a_filter)
-        response = self.gnip.find_filter(self.testpublisherscope, self.testpublisher, self.filterName)
+        response = self.gnip.get_filter(self.testpublisherscope, self.testpublisher, self.filterName)
         self.assertEqual(200, response.code)
         self.assertEqual(a_filter.name, response.result.name)
         
@@ -233,14 +233,19 @@ class GnipTestCase(unittest.TestCase):
         self.assertEqual(200, response.code)
         self.assertEquals(self.testpublisher, response.result.name)
 
-#    def testCreatePublisher(self):
-#        randVal = str(random.randint(1, 99999999))
-#        expected_publisher = publisher.Publisher(self.testpublisher + randVal, ['actor', 'tag'])
-#        self.gnip.create_publisher(expected_publisher)
-#
-#        response = self.gnip.get_publisher(self.testpublisherscope, self.testpublisher + randVal)
-#        self.assertEqual(200, response.code)
-#        self.assertEquals(expected_publisher, response.result)
+    def testCreateAndThenDeletePublisher(self):
+        randval = str(random.randint(1, 99999999))
+        publisher_name = self.testpublisher + randval
+        p = publisher.Publisher(publisher_name, ['actor', 'tag'])
+        self.gnip.create_publisher(p)
+      
+        response = self.gnip.get_publisher(self.testpublisherscope, publisher_name)
+        self.assertEqual(200, response.code)
+        self.assertEquals(p, response.result)
+
+        response = self.gnip.delete_publisher(p)
+        self.assertEqual(200, response.code)
+        self.assertTrue(isinstance(response.result, Result))
         
     def testUpdatePublisher(self):
         expected_publisher = publisher.Publisher(self.testpublisher, ['actor', 'tag'])

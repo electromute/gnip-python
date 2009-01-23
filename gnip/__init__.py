@@ -60,7 +60,7 @@ class Gnip:
         self.headers['Content-Encoding'] = 'gzip'
         self.headers['Content-Type'] = 'application/xml'
 
-    def sync_clock(self, theTime):
+    def sync_clock(self, the_time):
         """Adjust a time so that it corresponds with Gnip time
 
         @type datetime datetime
@@ -90,7 +90,7 @@ class Gnip:
         time_delta = gnip_time - local_time
 
         # Return the corrected time
-        return theTime + time_delta
+        return the_time + time_delta
 
     def time_to_string(self, time):
         """Convert the time to a Gnip bucket formatted string.
@@ -236,7 +236,7 @@ class Gnip:
         url_path = "/" + publisher_scope + "/publishers/" + publisher_name + "/filters/" + name + ".xml"
         return self.__parse_response(self.__do_http_delete(url_path))
 
-    def find_filter(self, publisher_scope, publisher_name, name):
+    def get_filter(self, publisher_scope, publisher_name, name):
         """Find an account specific Filter in Gnip.
 
         @type publisher_scope string
@@ -405,7 +405,21 @@ class Gnip:
 
         url_path = "/my/publishers"
         return self.__parse_response(self.__do_http_post(url_path, publisher.to_xml()))
-    
+
+    def delete_publisher(self, publisher):
+        """Delete a Gnip publisher from the "my" scope.
+
+        @type publisher Publisher
+        @param publisher A populated Publisher object
+        @return a response object that holds the HTTP response code and an unmarshalled response object
+
+        Deletes an existing publisher from the Gnip server within the "my" publisher scope.  This operation
+        also deletes all Filters associated with the Publisher.
+        """
+
+        url_path = "/my/publishers/" + publisher.name + ".xml"
+        return self.__parse_response(self.__do_http_delete(url_path))
+
     def get_publisher(self, scope, name):
         """Get a Gnip publisher.
 
