@@ -1,12 +1,8 @@
 Welcome to the Gnip Python convenience library!
 
-
-
 == Overview ==
 This library provides a Python API for accessing Gnip web services.  This library 
 supports activities related to publishing and subscribing to data.
-
-
 
 == Dependencies == 
 The following libraries are required by this library.
@@ -16,14 +12,10 @@ The following libraries are required by this library.
 - elementtree-1.2.7_20070827_preview - http://effbot.org/zone/element-index.htm
 - httplib2-0.4 - http://code.google.com/p/httplib2/
 
-
-
 == Installing ==
 Simply run the setup.py script provided.
 
     % sudo python setup.py install
-
-
 
 == Quick Start ==
 Gnip has a test publisher "gnip-test-publisher":
@@ -41,12 +33,8 @@ to know if you can connect and access the public notification data.
     	
 You should see an Activities object.
 
-
-
 == Debugging == 
-no additional debugging info at this time
-
-
+No additional debugging info at this time
 
 == Running the Client Library Tests ==
 
@@ -55,6 +43,7 @@ will be in the test/ directory.  Before running the tests, you will need to
 configure the username, password, and connection information used to connect
 to a Gnip server.  To do this, add the ./test/gnip_account.properties file 
 that contains the following properties:
+
 
 gnip.username=your-gnip-username@yourcompany.com
 gnip.password=your-gnip-password
@@ -72,9 +61,6 @@ For more information about creating a Gnip Publisher, see:
 To run the tests, type:
 
   % python regression.py
-
-
-
 
 ==== Subscriber Actions ====
 
@@ -121,7 +107,6 @@ You should see '200'.
 You can see the running list of notification buckets on the Gnip site:
     https://prod.gnipcentral.com/gnip/publishers/gnip-test-publisher/notification/
     
-    
 === Example 2: Filter notifications or activities by a set of users ===
 
 You can create a filter to stream activity data for the users you care about. 
@@ -150,7 +135,8 @@ gnip-test-publisher.
     import gnip
     from gnip import *
     gnip = gnip.Gnip("<your account email>","<your account password>")
-    my_filter = filter.Filter(name="myNotificationFilter", full_data=False, post_url=None, rules=[Rule("actor", "you"), Rule("actor", "mary"), Rule("actor", "joeblow")])
+    my_filter = filter.Filter(name="myNotificationFilter", full_data=False, post_url=None, 
+                              rules=[Rule("actor", "you"), Rule("actor", "mary"), Rule("actor", "joeblow")])
     gnip.create_filter("gnip", "gnip-test-publisher", my_filter)
     response = gnip.get_filter_notifications("gnip", "gnip-test-publisher", "myNotificationFilter")
     print response.code
@@ -179,13 +165,13 @@ URL is invalid).
     import gnip
     from gnip import *
     gnip = gnip.Gnip("<your account email>","<your account password>")
-    my_filter = filter.Filter(name="myActivityFilter", full_data=True, post_url=None, rules=[Rule("actor", "you"), Rule("actor", "mary"), Rule("actor", "joeblow")])
+    my_filter = filter.Filter(name="myActivityFilter", full_data=True, post_url=None, 
+                              rules=[Rule("actor", "you"), Rule("actor", "mary"), Rule("actor", "joeblow")])
     gnip.create_filter("gnip", "gnip-test-publisher", my_filter)
     response = gnip.get_filter_activities("gnip", "gnip-test-publisher", "myActivityFilter")
     print response.code
     
 You should see '200'.
-
 
 Your actors list should be (not necessarily in this order): you, mary, joeblow
 
@@ -193,8 +179,8 @@ You can also see your filters list for each publisher by going to the Gnip site:
     https://prod.gnipcentral.com/gnip/publishers/gnip-test-publisher/filters
 	
 You can view notification buckets on the Gnip site by going to:
+
     https://prod.gnipcentral.com/gnip/publishers/gnip-test-publisher/filters/myActivityFilter/activity
-	
 	
 === Example 3: Add rules to an existing filter ===
 
@@ -204,14 +190,12 @@ two new rules to the filter we created above, myNotificationFilter:
     import gnip
     gnip = gnip.Gnip("<your account email>","<your account password>")
     gnip.add_rules_to_filter("gnip", "gnip-test-publisher", "myNotificationFilter",
-        rules=[Rule("actor", "sam"), Rule("actor", "judy")])
+                             rules=[Rule("actor", "sam"), Rule("actor", "judy")])
     
-    response = gnip.find_filter("gnip", "gnip-test-publisher", "myNotificationFilter")
+    response = gnip.get_filter("gnip", "gnip-test-publisher", "myNotificationFilter")
     print response.code
 
 You should see '200'.
-
-    
     
 === Example 4: Delete a filter ===
 
@@ -221,11 +205,9 @@ that was created above:
     import gnip
     gnip = gnip.Gnip("<your account email>","<your account password>")
     response = gnip.delete_filter("gnip", "gnip-test-publisher", "myNotificationFilter");
-	print response.code
+    print response.code
     
 You should see '200'.
-
-
 
 === Example 5: Retrieve activities from a publisher ===
 
@@ -254,9 +236,8 @@ activities for a publisher that you do not own.
     print response.code
 
 You can see the running list of activity buckets on the Gnip site:
+
     https://prod.gnipcentral.com/gnip/publishers/gnip-test-publisher/activity/
-
-
 
 ==== Publisher Actions ====
 
@@ -281,7 +262,7 @@ created based on the rule types. The following rule types are supported by Gnip:
     from gnip import *
     gnip = gnip.Gnip("<your account email>","<your account password>")
     my_publisher = publisher.Publisher("myPublisher", ["actor", "tag"])
-	response = gnip.create_publisher(my_publisher)
+    response = gnip.create_publisher(my_publisher)
     print response.code
     
 You should see a response message of "Success".
@@ -309,7 +290,8 @@ Here is how you can publish activities to the activity stream:
     gnip = gnip.Gnip("<your account email>","<your account password>")
     a_payload = payload.Payload(title="Title",
                                 body="Body",
-                                media_urls=[xml_objects.URL(value="http://media1.com", meta_url="http://media1.com/meta"), xml_objects.URL(value="http://media2.com", meta_url="http://media2.com/meta")],
+                                media_urls=[xml_objects.URL(value="http://media1.com", meta_url="http://media1.com/meta"), 
+                                            xml_objects.URL(value="http://media2.com", meta_url="http://media2.com/meta")],
                                 raw="raw")
     an_activity = activity.Activity(action="update",
         activity_id="12345",
@@ -320,12 +302,12 @@ Here is how you can publish activities to the activity stream:
         destination_urls=[xml_objects.URL(value="http://destination1.com", meta_url="http://destination1.com/meta")],
         tags=[xml_objects.Tag(meta_url="http://tag1.com", value="tag1"), xml_objects.Tag(meta_url="http://tag2.com", value="tag2")],
         tos=[xml_objects.To(value="you", meta_url="http://you.com")],
-        regarding_urls=[xml_objects.URL(value="http://regarding1.com", meta_url="http://regarding2.com"), xml_objects.URL(value="http://regarding1.com", meta_url="http://regarding2.com")],
+        regarding_urls=[xml_objects.URL(value="http://regarding1.com", meta_url="http://regarding2.com"), 
+                        xml_objects.URL(value="http://regarding1.com", meta_url="http://regarding2.com")],
         payload=a_payload)
     an_activity.set_at_from_string("2008-07-02T11:16:16+00:00")
     response = gnip.publish_activities("myPublisher", activities.Activities([an_activity]))
     print response.code
-	
 
 === Contributing ===
 
@@ -341,5 +323,3 @@ discuss any changes you are making on the mailing list to get feed
 back from the other users.  Once you are ready to publish your changes
 you can send them to the mailing list or, if you are using GitHub,
 send a pull request to the owner of the main repositiory.
-
-
