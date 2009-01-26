@@ -60,25 +60,28 @@ class Payload(object):
         if payload_xml_node is not None:
 
             title_node = payload_xml_node.find("title")
-
             if title_node is not None:
                 self.title = title_node.text
             else:
                 self.title = None
 
             body_node = payload_xml_node.find("body")
-
             if body_node is not None:
                 self.body = body_node.text
             else:
                 self.body = None
 
             media_url_nodes = payload_xml_node.findall("mediaURL")
-
             if media_url_nodes is not None:
                 self.media_urls = []
                 for media_url_node in media_url_nodes:
-                    media_url = xml_objects.URL(value=media_url_node.text, meta_url=media_url_node.get("metaURL"))
+                    media_url = xml_objects.MediaURL(value=media_url_node.text, 
+                                                     height=media_url_node.get("height"),
+                                                     width=media_url_node.get("width"),
+                                                     duration=media_url_node.get("duration"),
+                                                     type=media_url_node.get("type"),
+                                                     mimetype=media_url_node.get("mimeType")
+                                                     )
                     self.media_urls.append(media_url)
             else:
                 self.media_urls = None
@@ -111,8 +114,16 @@ class Payload(object):
             for media_url in self.media_urls:
                 media_url_node = Element("mediaURL")
                 media_url_node.text = media_url.value
-                if media_url.meta_url is not None:
-                    media_url_node.set("metaURL", media_url.meta_url)
+                if media_url.height is not None:
+                    media_url_node.set("height", media_url.height)
+                if media_url.width is not None:
+                    media_url_node.set("width", media_url.width)
+                if media_url.duration is not None:
+                    media_url_node.set("duration", media_url.duration)
+                if media_url.type is not None:
+                    media_url_node.set("type", media_url.type)
+                if media_url.mimetype is not None:
+                    media_url_node.set("mimeType", media_url.mimetype)
                 payload_node.append(media_url_node)
 
         if self.__raw is not None:

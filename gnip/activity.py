@@ -11,7 +11,7 @@ class Activity(object):
 
     """
 
-    def __init__(self, at=None, action=None, activity_id=None, url=None, sources=None, places=None, actors=None,
+    def __init__(self, at=None, action=None, activity_id=None, url=None, sources=None, keywords=None, places=None, actors=None,
                  destination_urls=None, tags=None, tos=None, regarding_urls=None, payload=None):
         """Initialize the class.
 
@@ -25,6 +25,8 @@ class Activity(object):
         @param url URL of activity
         @type sources List of strings
         @param sources Sources of the activity
+        @type keywords List of Strings
+        @param keywords Keywords about an activity
         @type places List of Places
         @param places Place of the activity
         @type actors List of Actors
@@ -49,6 +51,7 @@ class Activity(object):
         self.activity_id = activity_id
         self.url = url
         self.sources = sources
+        self.keywords = keywords
         self.places = places
         self.actors = actors
         self.destination_urls = destination_urls
@@ -66,7 +69,6 @@ class Activity(object):
         '2008-07-01T05:02:03+00:00'.
 
         """
-
         return self.at.strftime("%Y-%m-%dT%H:%M:%S.000Z")
 
     def set_at_from_string(self, string):
@@ -78,7 +80,6 @@ class Activity(object):
         Sets 'at' attribute from an ISO8601 formatted string.
 
         """
-
         self.at = iso8601.parse_date(string)
 
     def from_xml(self, xml):
@@ -90,7 +91,6 @@ class Activity(object):
         Sets all of the member variables to new values, based on the
         passed in XML. 
         """
-
         root_node = fromstring(xml)
         self.from_xml_node(root_node)
 
@@ -103,7 +103,6 @@ class Activity(object):
         Returns a XML representation of this object.
 
         """
-
         activity_node = Element("activity")
 
         if self.at is not None:
@@ -131,6 +130,12 @@ class Activity(object):
                 source_node = Element("source")
                 source_node.text = source
                 activity_node.append(source_node)
+
+        if self.keywords is not None and len(self.keywords) > 0:
+            for keyword in self.keywords:
+                keyword_node = Element("keyword")
+                keyword_node.text = keyword
+                activity_node.append(keyword_node)
             
         if self.places is not None and len(self.places) > 0:
             for a_place in self.places:
@@ -214,6 +219,15 @@ class Activity(object):
         else:
             self.sources = None
 
+        keyword_nodes = xml_node.findall("keyword")
+        if keyword_nodes is not None:
+            self.keywords = []
+            for keyword_node in keyword_nodes:
+                keyword = keyword_node.text
+                self.keywords.append(keyword)
+        else:
+            self.keywords = None
+
         place_nodes = xml_node.findall("place")
         if place_nodes is not None:
             self.places = []
@@ -280,6 +294,7 @@ class Activity(object):
             ", " + str(self.activity_id) + \
             ", " + str(self.url) + \
             ", " + str(self.sources) + \
+            ", " + str(self.keywords) + \
             ", " + str(self.places) + \
             ", " + str(self.actors) + \
             ", " + str(self.destination_urls) + \

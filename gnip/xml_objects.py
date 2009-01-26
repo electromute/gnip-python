@@ -26,6 +26,51 @@ class URL(object):
             ret = 1
         return ret
 
+class MediaURL(object):
+    """Gnip Media URL container class.
+
+    value:    string representation of the media URL
+	height:   string the height
+	width:   string the width 
+	duration:   string the duration of the linked media
+	type:   string the Gnip normalized type of the linked media
+	mimeType: string the mimeType of the linked media
+    """
+
+    def __init__(self, value=None, height=None, width=None, duration=None, type=None, mimetype=None):
+		self.value = value
+		self.height = height
+		self.width = width
+		self.duration = duration
+		self.type = type
+		self.mimetype = mimetype
+
+    def __str__(self):
+        return "[" + str(self.value) + ", " \
+				   + str(self.height) + ", "\
+				   + str(self.width) + ", "\
+				   + str(self.duration) + ", "\
+				   + str(self.type) + ", "\
+				   + str(self.mimetype) \
+				+ "]"
+
+    def __cmp__(self, other):
+        if isinstance(other, MediaURL):
+            ret = cmp(self.value, other.value)
+            if ret == 0:
+                ret = cmp(self.height, other.height)
+                if ret == 0:
+	                ret = cmp(self.width, other.width)
+	                if ret == 0:
+		                ret = cmp(self.duration, other.duration)
+		                if ret == 0:
+			                ret = cmp(self.type, other.type)
+			                if ret == 0:
+				                ret = cmp(self.mimetype, other.mimetype)
+        else:
+            ret = 1
+        return ret
+
 class Actor(object):
     """Gnip Actor container class
     

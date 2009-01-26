@@ -83,5 +83,39 @@ class XmlObjectsTest(unittest.TestCase):
         error2 = Error("Hello Cruel World!")
         self.assertEquals("Hello Cruel World!", error2.message)
 
+	def testMediaURLsAreEqual(self):
+		m1 = MediaURL("http://www.example.com/somemedia.mp3")
+		m2 = MediaURL("http://www.example.com/somemedia.mp3")
+		self.assertEqual(m1, m2)
+		
+		m1 = MediaURL("http://www.example.com/somemedia.mp3", "70px", "80px", "2:30", "audio", "audio/mpeg")
+		m2 = MediaURL("http://www.example.com/somemedia.mp3", "70px", "80px", "2:30", "audio", "audio/mpeg")
+		self.assertEqual(m1, m2)
+        
+    def testMediaURLsArentEqual(self):
+        m1 = MediaURL("http://www.example.com/somemedia.mp3")
+        m2 = MediaURL("http://www.example.com/someothermedia.mp3")
+        self.assertNotEqual(m1, m2)
+        
+        m1 = MediaURL("http://www.example.com/somemedia.mp3", "70px", "80px", "2:30", "audio", "audio/mpeg")
+        m2 = MediaURL("http://www.example.com/somemedia.mp3", "71px", "80px", "2:30", "audio", "audio/mpeg")
+        self.assertNotEqual(m1, m2)
+
+        m1 = MediaURL("http://www.example.com/somemedia.mp3", "70px", "80px", "2:30", "audio", "audio/mpeg")
+        m2 = MediaURL("http://www.example.com/somemedia.mp3", "70px", "81px", "2:30", "audio", "audio/mpeg")
+        self.assertNotEqual(m1, m2)
+
+        m1 = MediaURL("http://www.example.com/somemedia.mp3", "70px", "80px", "2:30", "audio", "audio/mpeg")
+        m2 = MediaURL("http://www.example.com/somemedia.mp3", "70px", "80px", "2:31", "audio", "audio/mpeg")
+        self.assertNotEqual(m1, m2)
+
+        m1 = MediaURL("http://www.example.com/somemedia.mp3", "70px", "80px", "2:30", "audio", "audio/mpeg")
+        m2 = MediaURL("http://www.example.com/somemedia.mp3", "70px", "80px", "2:30", "video", "audio/mpeg")
+        self.assertNotEqual(m1, m2)
+
+        m1 = MediaURL("http://www.example.com/somemedia.mp3", "70px", "80px", "2:30", "audio", "audio/mpeg")
+        m2 = MediaURL("http://www.example.com/somemedia.mp3", "70px", "80px", "2:30", "audio", "audio/mpeg4")
+        self.assertNotEqual(m1, m2)
+        
 if __name__ == '__main__':
     unittest.main()
