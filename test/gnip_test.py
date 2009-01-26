@@ -57,12 +57,12 @@ class GnipTestCase(unittest.TestCase):
     def testPublishActivities(self):
         randVal = str(random.randint(1, 99999999))
         a_place1 = place.Place(xml_objects.Point(1.0, -2.0), 3, 4, "city", "Boulder", "center")
-
         a_place2 = place.Place(xml_objects.Point(11.0, -12.0), 13, 14, "city", "Boulder", "center")
 
         a_payload = payload.Payload(title="Title",
                                     body="Body",
-                                    media_urls=[xml_objects.URL(value="http://media1.com", meta_url="http://media1.com/meta"), xml_objects.URL(value="http://media2.com", meta_url="http://media2.com/meta")],
+                                    media_urls=[xml_objects.MediaURL(value="http://media1.com"), 
+                                                xml_objects.MediaURL(value="http://media2.com")],
                                     raw="raw")
 
         an_activity = activity.Activity(action="update",

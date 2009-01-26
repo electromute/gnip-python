@@ -7,5 +7,6 @@
 *.iml
 *.iws
 *.egg-info
+*.egg
 dist
 build

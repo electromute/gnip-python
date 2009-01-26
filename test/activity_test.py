@@ -75,10 +75,9 @@ class ActivityTestCase(unittest.TestCase):
 
         self.testTitleValue = "the_title"            
         self.testBodyValue = "the_body"
-        self.testMediaURLMetaURL1 = "mediaURL_metaURL_1"
-        self.testMediaUrlValue1 = "the_mediaURL_1"
-        self.testMediaURLMetaURL2 = "mediaURL_metaURL_2"
-        self.testMediaUrlValue2 = "the_mediaURL_2" 
+        self.testMediaURL0 = MediaURL("http://www.example.com/somemedia.mp3", "70px", "80px", "2:30", "audio", "audio/mpeg")
+        self.testMediaURL1 = MediaURL("http://www.example.com/somevideo.qt")
+        
         self.testRaw = "the_raw"   
         
     def testTimeStringConversionFromDatetime(self):
@@ -228,10 +227,8 @@ class ActivityTestCase(unittest.TestCase):
         
         self.assertEqual(an_activity.payload.title, self.testTitleValue)
         self.assertEqual(an_activity.payload.body, self.testBodyValue)
-        self.assertEqual(an_activity.payload.media_urls[0].value, self.testMediaUrlValue1)
-        self.assertEqual(an_activity.payload.media_urls[0].meta_url, self.testMediaURLMetaURL1)
-        self.assertEqual(an_activity.payload.media_urls[1].meta_url, self.testMediaURLMetaURL2)
-        self.assertEqual(an_activity.payload.media_urls[1].value, self.testMediaUrlValue2)
+        self.assertEqual(an_activity.payload.media_urls[0], self.testMediaURL0)
+        self.assertEqual(an_activity.payload.media_urls[1], self.testMediaURL1)
 
         self.assertEqual(an_activity.payload.read_raw(), self.testRaw)            
 
@@ -244,8 +241,7 @@ class ActivityTestCase(unittest.TestCase):
 
         a_payload = payload.Payload(title=self.testTitleValue,
                                         body=self.testBodyValue,
-                                        media_urls=[URL(value=self.testMediaUrlValue1, meta_url=self.testMediaURLMetaURL1),
-                                                    URL(value=self.testMediaUrlValue2, meta_url=self.testMediaURLMetaURL2)],
+                                        media_urls=[self.testMediaURL0, self.testMediaURL1],
                                         raw=self.testRaw)
 
         an_activity = activity.Activity(action=self.testActionValue, 
