@@ -18,17 +18,21 @@ Simply run the setup.py script provided.
     % sudo python setup.py install
 
 == Quick Start ==
-Gnip has a test publisher "gnip-test-publisher":
-https://prod.gnipcentral.com/gnip/publishers/gnip-test-publisher/notification/
+Gnip has a test publisher "gnipherald":
+https://api-v21.gnip.com/gnip/publishers/gnipherald/notification
 
 The following example retrieves notification data from the current bucket for 
-"gnip-test-publisher." Please note that the current bucket is not static and 
+"gnipherald." Please note that the current bucket is not static and 
 therefore will contain a variable amount of data, but you'll get quick feedback 
 to know if you can connect and access the public notification data.
 
+Also note that the scope of the publisher is "gnip", which is a public 
+publisher that you do not own. If you create a publisher, it will be scoped 
+to "my".
+
     import gnip
     gnip = gnip.Gnip("<your account email>","<your account password>")
-    response = gnip.get_publisher_notifications("gnip", "gnip-test-publisher")
+    response = gnip.get_publisher_notifications("gnip", "gnipherald")
     print response.result
     	
 You should see an Activities object.
@@ -52,11 +56,11 @@ gnip.test.publisher=your-test-publisher
 
 Note, for the tests to pass, you must reference a Gnip test publisher that
 exists and that you own and thus can be used for publishing activities 
-from a unit test. The "gnip-test-publisher" does not work for the tests.
+from a unit test. The "gnipherald" does not work for the tests.
 
 For more information about creating a Gnip Publisher, see:
 
-  http://prod.gnipcentral.com
+  http://api-v21.gnip.com/
 
 To run the tests, type:
 
@@ -81,31 +85,31 @@ As a consumer one thing you might be interested in immediately is
 grabbing data from a publisher. To do this you must create a connection to Gnip 
 using your username and password.  Once the connection is established you can 
 get the publisher and request the stream. These examples uses the publisher 
-"gnip-test-publisher".
+"gnipherald".
 
 *** Notification data stream request ***
 
     import gnip
     gnip = gnip.Gnip("<your account email>","<your account password>")
-    response = gnip.get_publisher_notifications("gnip", "gnip-test-publisher")
+    response = gnip.get_publisher_notifications("gnip", "gnipherald")
     print response.code
     
 You should see '200'.
 
 You can also view the current notifications bucket via web on the Gnip site:
-    https://prod.gnipcentral.com/gnip/publishers/gnip-test-publisher/notification/current.xml
+    https://api-v21.gnip.com/gnip/publishers/gnipherald/notification/current.xml
     
 *** Notification data stream request with optional date param ***
 
     import gnip
     gnip = gnip.Gnip("<your account email>","<your account password>")
-    response = gnip.get_publisher_notifications("gnip", "gnip-test-publisher", datetime.datetime.utcnow() - datetime.timedelta(minutes=1))
+    response = gnip.get_publisher_notifications("gnip", "gnipherald", datetime.datetime.utcnow() - datetime.timedelta(minutes=1))
     print response.code
     
 You should see '200'.
     
 You can see the running list of notification buckets on the Gnip site:
-    https://prod.gnipcentral.com/gnip/publishers/gnip-test-publisher/notification/
+    https://api-v21.gnip.com/gnip/publishers/gnipherald/notification/
     
 === Example 2: Filter notifications or activities by a set of users ===
 
@@ -118,8 +122,8 @@ delicious, etc.).
 You can only retrieve activity data (full data) from publishers that you don't own 
 by creating a filter.
 
-The test actor for "gnip-test-publisher" is "joeblow". To test your filter, be sure 
-"joeblow" appears in your rule set.
+The test actor for "gnipherald" is "jvaleski". To test your filter, be sure 
+"jvaleski" appears in your rule set.
 
 The following examples illustrate creating filters for both notification and activity 
 data. Additionally, the two examples show how to use/not use the post URL parameter.
@@ -130,24 +134,24 @@ Note that the full data (second parameter) of the filter object must be set to
 false. This example does not include a POST URL, meaning you'll have to poll 
 Gnip for the results when you need them. The following snippet creates (and 
 retrieves) a notification filter called "myNotificationFilter" on the publisher 
-gnip-test-publisher.
+gnipherald.
 
     import gnip
     from gnip import *
     gnip = gnip.Gnip("<your account email>","<your account password>")
     my_filter = filter.Filter(name="myNotificationFilter", full_data=False, post_url=None, 
-                              rules=[Rule("actor", "you"), Rule("actor", "mary"), Rule("actor", "joeblow")])
-    gnip.create_filter("gnip", "gnip-test-publisher", my_filter)
-    response = gnip.get_filter_notifications("gnip", "gnip-test-publisher", "myNotificationFilter")
+                              rules=[Rule("actor", "you"), Rule("actor", "mary"), Rule("actor", "jvaleski")])
+    gnip.create_filter("gnip", "gnipherald", my_filter)
+    response = gnip.get_filter_notifications("gnip", "gnipherald", "myNotificationFilter")
     print response.code
     
 You should see '200'
 	
 You can also see your filters list for each publisher by going to the Gnip site:
-    https://prod.gnipcentral.com/gnip/publishers/gnip-test-publisher/filters
+    https://api-v21.gnip.com/gnip/publishers/gnipherald/filters
 	
 You can view notification buckets on the Gnip site by going to:
-    https://prod.gnipcentral.com/gnip/publishers/gnip-test-publisher/filters/myNotificationFilter/notification
+    https://api-v21.gnip.com/gnip/publishers/gnipherald/filters/myNotificationFilter/notification
 	
 *** Activity Filter with POST URL ***
 
@@ -155,7 +159,7 @@ Note that the full data (second parameter) of the filter object must be set to
 true to view activity data. This example includes the optional POST URL, 
 meaning Gnip will POST via an HTTP HEAD request to this URL. The following 
 snippet creates (and gets) a notification filter called "myActivityFilter" on 
-the publisher gnip-test-publisher. 
+the publisher gnipherald. 
 
 If you want notifications to be sent to a script on your server for processing, 
 you must ensure that the postURL parameter you set responds successfully to an 
@@ -166,21 +170,21 @@ URL is invalid).
     from gnip import *
     gnip = gnip.Gnip("<your account email>","<your account password>")
     my_filter = filter.Filter(name="myActivityFilter", full_data=True, post_url=None, 
-                              rules=[Rule("actor", "you"), Rule("actor", "mary"), Rule("actor", "joeblow")])
-    gnip.create_filter("gnip", "gnip-test-publisher", my_filter)
-    response = gnip.get_filter_activities("gnip", "gnip-test-publisher", "myActivityFilter")
+                              rules=[Rule("actor", "you"), Rule("actor", "mary"), Rule("actor", "jvaleski")])
+    gnip.create_filter("gnip", "gnipherald", my_filter)
+    response = gnip.get_filter_activities("gnip", "gnipherald", "myActivityFilter")
     print response.code
     
 You should see '200'.
 
-Your actors list should be (not necessarily in this order): you, mary, joeblow
+Your actors list should be (not necessarily in this order): you, mary, jvaleski
 
 You can also see your filters list for each publisher by going to the Gnip site:
-    https://prod.gnipcentral.com/gnip/publishers/gnip-test-publisher/filters
+    https://api-v21.gnip.com/gnip/publishers/gnipherald/filters
 	
 You can view notification buckets on the Gnip site by going to:
 
-    https://prod.gnipcentral.com/gnip/publishers/gnip-test-publisher/filters/myActivityFilter/activity
+    https://api-v21.gnip.com/gnip/publishers/gnipherald/filters/myActivityFilter/activity
 	
 === Example 3: Add rules to an existing filter ===
 
@@ -189,10 +193,10 @@ two new rules to the filter we created above, myNotificationFilter:
 
     import gnip
     gnip = gnip.Gnip("<your account email>","<your account password>")
-    gnip.add_rules_to_filter("gnip", "gnip-test-publisher", "myNotificationFilter",
+    gnip.add_rules_to_filter("gnip", "gnipherald", "myNotificationFilter",
                              rules=[Rule("actor", "sam"), Rule("actor", "judy")])
     
-    response = gnip.get_filter("gnip", "gnip-test-publisher", "myNotificationFilter")
+    response = gnip.get_filter("gnip", "gnipherald", "myNotificationFilter")
     print response.code
 
 You should see '200'.
@@ -204,7 +208,7 @@ that was created above:
 
     import gnip
     gnip = gnip.Gnip("<your account email>","<your account password>")
-    response = gnip.delete_filter("gnip", "gnip-test-publisher", "myNotificationFilter");
+    response = gnip.delete_filter("gnip", "gnipherald", "myNotificationFilter");
     print response.code
     
 You should see '200'.
@@ -218,11 +222,11 @@ activities for a publisher that you do not own.
 
     import gnip
     gnip = gnip.Gnip("<your account email>","<your account password>")
-    response = gnip.get_publisher_notifications("gnip", "gnip-test-publisher")
+    response = gnip.get_filter_notifications("gnip", "gnipherald", "myActivityFilter")
     print response.code
 
 You can also view the current activity bucket via web on the Gnip site:
-    https://prod.gnipcentral.com/gnip/publishers/gnip-test-publisher/activity/current.xml
+    https://api-v21.gnip.com/gnip/publishers/gnipherald/filters/myActivityFilter/activity/current.xml
 
 *** Activity Data Stream Request with Date Param ***
 
@@ -232,12 +236,12 @@ activities for a publisher that you do not own.
     import gnip
     import datetime
     gnip = gnip.Gnip("<your account email>","<your account password>")
-    response = gnip.get_publisher_notifications("gnip", "gnip-test-publisher", datetime.datetime.utcnow() - datetime.timedelta(minutes=1))
+    response = gnip.get_filter_notifications("gnip", "gnipherald", "myActivityFilter", datetime.datetime.utcnow() - datetime.timedelta(minutes=1))
     print response.code
 
 You can see the running list of activity buckets on the Gnip site:
 
-    https://prod.gnipcentral.com/gnip/publishers/gnip-test-publisher/activity/
+    https://api-v21.gnip.com/gnip/publishers/gnipherald/filters/myActivityFilter/activity/
 
 ==== Publisher Actions ====
 
@@ -283,7 +287,13 @@ You should see a response message of "Success".
 
 === Example 3: Publishing activities
 
-Here is how you can publish activities to the activity stream:
+Here is how you can publish activities to the activity stream. You'll want to review the
+Gnip xsd for specifics on what is required/optional. 
+
+https://api-v21.gnip.com/schema/gnip.xsd
+
+You can also review the class
+files for specific definitions.
 
     import gnip
     from gnip import *
