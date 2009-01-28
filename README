@@ -110,7 +110,7 @@ You should see '200'.
     
 You can see the running list of notification buckets on the Gnip site:
     https://api-v21.gnip.com/gnip/publishers/gnipherald/notification/
-    
+
 === Example 2: Filter notifications or activities by a set of users ===
 
 You can create a filter to stream activity data for the users you care about. 
@@ -242,6 +242,7 @@ activities for a publisher that you do not own.
 You can see the running list of activity buckets on the Gnip site:
 
     https://api-v21.gnip.com/gnip/publishers/gnipherald/filters/myActivityFilter/activity/
+
 
 ==== Publisher Actions ====
 
